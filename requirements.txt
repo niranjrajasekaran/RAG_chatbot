@@ -12,5 +12,6 @@ langchain-openai
 langchain_chroma
 python-multipart
 pydantic
+pysqlite3-binary
 # pytest
 # pytest-asyncio
