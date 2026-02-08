@@ -1,0 +1,49 @@
+name: Trigger auto deployment for rag-chatbot-demo-v1
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/rag-chatbot-demo-v1-AutoDeployTrigger-fcb7e28f-4ba9-4734-adcd-46a8935b658c.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:      
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write #This is required for requesting the OIDC JWT Token
+      contents: read #Required when GH token is used to authenticate with private repo
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.RAGCHATBOTDEMOV1_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.RAGCHATBOTDEMOV1_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.RAGCHATBOTDEMOV1_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }}
+          _dockerfilePathKey_: _dockerfilePath_
+          _targetLabelKey_: _targetLabel_
+          registryUrl: ragchatbotpoc.azurecr.io
+          registryUsername: ${{ secrets.RAGCHATBOTDEMOV1_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.RAGCHATBOTDEMOV1_REGISTRY_PASSWORD }}
+          containerAppName: rag-chatbot-demo-v1
+          resourceGroup: rg-rag-poc
+          imageToBuild: ragchatbotpoc.azurecr.io/rag-chatbot-demo-v1:${{ github.sha }}
+          _buildArgumentsKey_: |
+            _buildArgumentsValues_
+
+
