@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Set work directory
 WORKDIR /app
+ENV PYTHONPATH=/app
 
 # Install system dependencies (for PDF and other requirements)
 RUN apt-get update && apt-get install -y \
