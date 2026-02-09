@@ -37,7 +37,7 @@ jobs:
           appSourcePath: ${{ github.workspace }}
           _dockerfilePathKey_: _dockerfilePath_
           _targetLabelKey_: _targetLabel_
-          registryUrl: 
+          registryUrl: ${{ secrets.RAGCHATBOTDEMO_LOGIN_SERVER }}
           registryUsername: ${{ secrets.RAGCHATBOTDEMO_REGISTRY_USERNAME }}
           registryPassword: ${{ secrets.RAGCHATBOTDEMO_REGISTRY_PASSWORD }}
           containerAppName: rag-chatbot-demo
@@ -45,5 +45,6 @@ jobs:
           imageToBuild: default/[parameters('containerAppName')]:${{ github.sha }}
           _buildArgumentsKey_: |
             _buildArgumentsValues_
+
 
 
